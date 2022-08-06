@@ -5,11 +5,15 @@
   <%= @room.name %>
 </p>
 
-<%= @room.messages.each do |message| %>
-  <p><%= message.content %></p>
+<%= turbo_stream_from "room-#{@room.id}" %>
+<%= turbo_frame_tag "messages" do %> 
+  <%= render @messages %>
 <% end %>
 
-<%= form_for Message.new, method: :post, url: %>
+<%= form_for Message.new, method: :post, url: room_messages_path(@room.id), remote: true do |f| %>
+  <%= f.rich_text_area :content %>
+  <%= f.submit %>
+<% end %>
 
 <%= link_to 'Edit', edit_room_path(@room) %> |
 <%= link_to 'Back', rooms_path %>
